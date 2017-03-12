@@ -45,7 +45,8 @@ class ConsoleWriter(object):
 
 
 class Worker(object):
-    def __init__(self, delay=None, proxies=None, consumer=None):
+    def __init__(self, once=False, delay=None, proxies=None, consumer=None):
+        self._once = once
         self._proxies = proxies
         self._delay = delay
         self._consumer = consumer
@@ -62,6 +63,8 @@ class Worker(object):
             }
             self._consumer.consume(ts=datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'), **data)
             logging.debug('Session data saved.')
+            if self._once:
+                break
             time.sleep(random_seconds(*self._delay))
 
 
@@ -70,15 +73,21 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--conf', dest='conf', type=str, default=DEFAULT_CONF, help='configuration file')
     parser.add_argument('-l', '--logfile', dest='logfile', type=str, default=None, help='log file')
     parser.add_argument('-v', '--verbose', action='store_true', default=False, help='increase output verbosity')
+    parser.add_argument('-o', '--once', action='store_true', default=False, help='get one row of data and exit')
     parser.add_argument('-f', '--format', type=str, choices=('json', 'text'), default='text', help='output format')
     args = parser.parse_args()
     
     logging.basicConfig(
         filename=args.logfile,
-        level=logging.DEBUG if args.verbose else logging.INFO,
+        level=logging.DEBUG if args.verbose else logging.WARNING,
         datefmt='%Y-%m-%d %H:%M:%S',
         format='%(asctime)s - %(levelname)-8s - %(message)s', 
-    )    
+    )
+    
+    if not args.verbose:
+        # disable log messages from urllib3 library used by Requests module
+        logging.getLogger("urllib3").setLevel(logging.WARNING)        
+    
     try:
         config = ConfigParser.ConfigParser()
         config.read(args.conf)
@@ -90,6 +99,7 @@ if __name__ == '__main__':
                    else {}
         consumer = ConsoleWriter(create_formatter(args.format, fmt_args))
         worker = Worker(
+            once=args.once,
             delay=str_to_floats(config.get('http', 'delay')) ,
             proxies = {'http': proxy_addr} if proxy_addr else None,
             consumer = consumer
@@ -104,7 +114,6 @@ if __name__ == '__main__':
         logging.error(ex, exc_info=args.verbose)
         sys.exit(1)
         
-    logging.info('Done.')
     sys.exit(0)
 
 
