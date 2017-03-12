@@ -46,7 +46,7 @@ $ nosetests tests/*
 
 ```
 $ python tests/scrapper_test.py
-$ python tests/scrapper_test.py
+$ python tests/forex_test.py
 ```
 
 ### Запуск
