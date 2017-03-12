@@ -52,9 +52,11 @@ class TestForexSession():
     def test_xag(self):
         ok_(isinstance(self.forex.xag, float))    
     
+    def test_xpt(self):
+        ok_(isinstance(self.forex.xpt, float))  
 
-
-
+    def test_xpd(self):
+        ok_(isinstance(self.forex.xpd, float))  
 
 if __name__ == '__main__':
     import logging

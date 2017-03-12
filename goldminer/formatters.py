@@ -16,11 +16,11 @@ __license__ = "MIT"
 __version__ = "1.0.0"
 __email__ = "krushinsky@gmail.com"
 
+FIELDS = ('ts', 'usd', 'eur', 'xau', 'xag', 'xpt', 'xpd')
+
 class TextFormatter(object):
     '''Converts data to string of columns.
     Default column separator is "|". Change it via 'delimiter' parameter.
-    
-    Example: 2017-03-11T14:59:50|58.978|62.992|1204.5|17.03
     '''
     def __init__(self, delimiter='|'):
         self._delimiter = delimiter
@@ -32,20 +32,24 @@ class TextFormatter(object):
         
     def format(self, data):
         '''Given a data dictionary, return a row with columns,
-        in order: timestamp, USD, EUR, XAU, XAG.
+        in order: timestamp, USD, EUR, Gold, Silver, Platinum, Palladium 
+        
+        Example: 2017-03-12T19:36:30|59.214|63.277|1204.500|17.030|937.000|746.600
         '''
-        return self._delimiter.join([ self._format_col(k, data[k]) for k in ('ts', 'usd', 'eur', 'xau', 'xag') ])
+        return self._delimiter.join([ self._format_col(k, data[k]) for k in FIELDS ])
     
     
 
 class JSONFormatter(object):
     '''Converts data to JSON, e.g.:
     {
-        "eur": 62.992, 
-        "ts": "2017-03-11T14:59:50", 
-        "usd": 58.978, 
+        "eur": 63.268, 
+        "ts": "2017-03-12T19:38:07", 
+        "usd": 59.214, 
         "xag": 17.03, 
-        "xau": 1204.5
+        "xau": 1204.5, 
+        "xpd": 746.6, 
+        "xpt": 937.0
     }    
     '''
     def format(self, data):

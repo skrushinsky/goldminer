@@ -33,6 +33,8 @@ class ForexSession(object):
         self._eur = None # euru
         self._xau = None # gold
         self._xag = None # silver
+        self._xpt = None # platinium
+        self._xpd = None # palladium
         
         if on_failure is None:
             self._on_failure = self._raise_exception
@@ -63,7 +65,8 @@ class ForexSession(object):
     def get_metal_bids(self):
         self._xau = self._get_metal_bid('/chart/gold/')
         self._xag = self._get_metal_bid('/chart/silver/')
-
+        self._xpt = self._get_metal_bid('/chart/platinum/')
+        self._xpd = self._get_metal_bid('/chart/palladium/')
 
     def get_money_bids(self):
         r = get_request('%s%s' % (SITE_ROOT, '/chart/usdrub/'), self.session)
@@ -80,6 +83,7 @@ class ForexSession(object):
      
     @property
     def session(self):
+        '''requests.Session instance, initialized lazily.'''
         if self._session is None:
             self._session = create_session(proxies=self._proxies)
         return self._session
@@ -87,19 +91,33 @@ class ForexSession(object):
      
     @property   
     def usd(self):
+        '''US Dollars price in Rubles'''
         return self._usd
 
     @property   
     def eur(self):
+        '''Euro price in Rubles'''
         return self._eur        
         
     @property   
     def xau(self):
+        '''Gold price in USD for 1 oz'''
         return self._xau        
 
     @property   
     def xag(self):
+        '''Silver price in USD for 1 oz'''
         return self._xag
+
+    @property   
+    def xpt(self):
+        '''Platinium price in USD for 1 oz'''
+        return self._xpt
+
+    @property   
+    def xpd(self):
+        '''Palladium price in USD for 1 oz'''
+        return self._xpd
     
     def _sleep(self):
         d = self._delay

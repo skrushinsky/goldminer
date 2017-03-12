@@ -64,6 +64,8 @@ class Worker(object):
                     'eur': forex.eur,
                     'xau': forex.xau,
                     'xag': forex.xag,
+                    'xpt': forex.xpt,
+                    'xpd': forex.xpd,
                 }
                 self._consumer.consume(ts=datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'), **data)
                 logging.debug('Session data saved.')
