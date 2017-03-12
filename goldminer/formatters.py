@@ -10,6 +10,12 @@ Created on 2017-03-11 17:00
 
 '''
 
+__author__ = 'Sergey Krushinsky'
+__copyright__ = "Copyright 2017"
+__license__ = "MIT"
+__version__ = "1.0.0"
+__email__ = "krushinsky@gmail.com"
+
 class TextFormatter(object):
     '''Converts data to string of columns.
     Default column separator is "|". Change it via 'delimiter' parameter.

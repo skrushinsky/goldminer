@@ -13,8 +13,8 @@ import random
 import re
 
 __author__ = 'Sergey Krushinsky'
-__copyright__ = "Copyright 2016"
-__license__ = "Commercial"
+__copyright__ = "Copyright 2017"
+__license__ = "MIT"
 __version__ = "1.0.0"
 __email__ = "krushinsky@gmail.com"
 

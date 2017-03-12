@@ -9,8 +9,8 @@ Created on 2014-07-10 16:06
 '''
 
 __author__ = 'Sergey Krushinsky'
-__copyright__ = "Copyright 2014"
-__license__ = "Apache"
+__copyright__ = "Copyright 2017"
+__license__ = "MIT"
 __version__ = "1.0.0"
 __email__ = "krushinsky@gmail.com"
 

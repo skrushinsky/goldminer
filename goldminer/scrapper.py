@@ -8,6 +8,7 @@ Created on 2016-02-03 11:39
 
 '''
 
+
 import logging
 import random
 import time
@@ -21,7 +22,7 @@ from goldminer.errors import BotDetectedError, EmptyContentError, BadStatusError
 from goldminer.utils import random_seconds
 
 __author__ = 'Sergey Krushinsky'
-__copyright__ = "Copyright 2016"
+__copyright__ = "Copyright 2017"
 __license__ = "MIT"
 __version__ = "1.0.0"
 __email__ = "krushinsky@gmail.com"

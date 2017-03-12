@@ -7,6 +7,13 @@ Test scrapper
 Created on 2016-02-03 11:55
 
 '''
+
+__author__ = 'Sergey Krushinsky'
+__copyright__ = "Copyright 2017"
+__license__ = "MIT"
+__version__ = "1.0.0"
+__email__ = "krushinsky@gmail.com"
+
 import sys
 from os.path import dirname
 sys.path.append(dirname(dirname(__file__)))
