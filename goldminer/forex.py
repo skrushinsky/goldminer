@@ -59,7 +59,9 @@ class ForexSession(object):
         soup = Soup(r.text, 'lxml')
         table = soup.find('table', class_='stat')
         assert table is not None, 'stat table not found!'
-        return self._get_bid(table, 1, 0)
+        
+        # the first index is purchase price, the second - sale price 
+        return [ self._get_bid(table, 1, i) for i in (0, 1) ] 
 
 
     def get_metal_bids(self):
@@ -73,8 +75,10 @@ class ForexSession(object):
         soup = Soup(r.text, 'lxml')
         table = soup.find('table', class_='stat')
         assert table is not None, 'USD/EUR table not found!'
-        self._usd = self._get_bid(table, 1, 1)
-        self._eur = self._get_bid(table, 2, 2)                
+        
+        # the first index is purchase price, the second - sale price 
+        self._usd = [ self._get_bid(table, 1, i) for i in (1, 2) ]
+        self._eur = [ self._get_bid(table, 2, i) for i in (1, 2) ]                
 
 
     def _raise_exception(self, reason):

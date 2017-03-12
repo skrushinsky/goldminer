@@ -67,7 +67,8 @@ class Worker(object):
                     'xpt': forex.xpt,
                     'xpd': forex.xpd,
                 }
-                self._consumer.consume(ts=datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'), **data)
+                ts = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00')
+                self._consumer.consume(ts=ts, **data)
                 logging.debug('Session data saved.')
             finally:
                 if self._once:

@@ -22,21 +22,25 @@ class TextFormatter(object):
     '''Converts data to string of columns.
     Default column separator is "|". Change it via 'delimiter' parameter.
     '''
-    def __init__(self, delimiter='|'):
-        self._delimiter = delimiter
+    def __init__(self, col_delimiter='|', target_delimiter=':'):
+        self._col_delimiter = col_delimiter
+        self._target_delimiter = target_delimiter
         
     def _format_col(self, k, v):
         if k == 'ts':
             return v
-        return '%.3f' % v
+        lst = [ '%.3f' % float(x) for x in v ]
+        return self._target_delimiter.join(lst)
         
     def format(self, data):
         '''Given a data dictionary, return a row with columns,
         in order: timestamp, USD, EUR, Gold, Silver, Platinum, Palladium 
         
-        Example: 2017-03-12T19:36:30|59.214|63.277|1204.500|17.030|937.000|746.600
+        Example:
+        2017-03-12T20:13:08+00|58.721:58.731|62.701:62.721|1204.500:1204.800|17.030:17.060|937.000:947.000|746.600:749.600
         '''
-        return self._delimiter.join([ self._format_col(k, data[k]) for k in FIELDS ])
+        
+        return self._col_delimiter.join([ self._format_col(k, data[k]) for k in FIELDS ])
     
     
 
@@ -44,7 +48,7 @@ class JSONFormatter(object):
     '''Converts data to JSON, e.g.:
     {
         "eur": 63.268, 
-        "ts": "2017-03-12T19:38:07", 
+        "ts": "2017-03-12T19:38:07+00", 
         "usd": 59.214, 
         "xag": 17.03, 
         "xau": 1204.5, 

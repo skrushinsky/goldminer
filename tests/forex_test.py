@@ -40,23 +40,23 @@ class TestForexSession():
         self.forex()
     
     def test_usd(self):
-        ok_(isinstance(self.forex.usd, float))
+        ok_(isinstance(self.forex.usd, list))
     
     def test_eur(self):
-        ok_(isinstance(self.forex.eur, float))
+        ok_(isinstance(self.forex.eur, list))
         
         
     def test_xau(self):
-        ok_(isinstance(self.forex.xau, float))
+        ok_(isinstance(self.forex.xau, list))
 
     def test_xag(self):
-        ok_(isinstance(self.forex.xag, float))    
+        ok_(isinstance(self.forex.xag, list))    
     
     def test_xpt(self):
-        ok_(isinstance(self.forex.xpt, float))  
+        ok_(isinstance(self.forex.xpt, list))  
 
     def test_xpd(self):
-        ok_(isinstance(self.forex.xpd, float))  
+        ok_(isinstance(self.forex.xpd, list))  
 
 if __name__ == '__main__':
     import logging
