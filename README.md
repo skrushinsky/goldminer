@@ -54,7 +54,14 @@ python setup.py install develop
 
 
 Из верхнего каталога приложения:
+
 ```
+$ nosetests tests/*
+```
+Или:
+
+```
+$ python tests/scrapper_test.py
 $ python tests/scrapper_test.py
 ```
 
