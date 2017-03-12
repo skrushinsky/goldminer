@@ -25,7 +25,7 @@ SITE_ROOT = 'http://www.forexpf.ru'
 
     
 class ForexSession(object):
-    def __init__(self, proxies=None, delay=DEFAULT_DELAY):
+    def __init__(self, proxies=None, delay=DEFAULT_DELAY, on_failure=None):
         self._proxies = proxies
         self._delay = delay
         self._session = None
@@ -33,6 +33,11 @@ class ForexSession(object):
         self._eur = None # euru
         self._xau = None # gold
         self._xag = None # silver
+        
+        if on_failure is None:
+            self._on_failure = self._raise_exception
+        else:
+            self._on_failure = on_failure
         
         
     def _get_bid(self, table=None, row_offset=1, col_offset=0):
@@ -69,8 +74,8 @@ class ForexSession(object):
         self._eur = self._get_bid(table, 2, 2)                
 
 
-    def _on_failure(self, reason):
-        logging.error(reason)
+    def _raise_exception(self, reason):
+        raise RuntimeError(reason)
     
      
     @property

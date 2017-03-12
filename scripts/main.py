@@ -53,19 +53,24 @@ class Worker(object):
     
     def __call__(self):
         while True:
-            forex = ForexSession(proxies=self._proxies)
-            forex()
-            data = {
-                'usd': forex.usd,
-                'eur': forex.eur,
-                'xau': forex.xau,
-                'xag': forex.xag,
-            }
-            self._consumer.consume(ts=datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'), **data)
-            logging.debug('Session data saved.')
-            if self._once:
-                break
-            time.sleep(random_seconds(*self._delay))
+            try:
+                forex = ForexSession(proxies=self._proxies)
+                forex()
+            except Exception as ex:
+                logging.error(ex)
+            else:
+                data = {
+                    'usd': forex.usd,
+                    'eur': forex.eur,
+                    'xau': forex.xau,
+                    'xag': forex.xag,
+                }
+                self._consumer.consume(ts=datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S'), **data)
+                logging.debug('Session data saved.')
+            finally:
+                if self._once:
+                    break
+                time.sleep(random_seconds(*self._delay))
 
 
 if __name__ == '__main__':
