@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-Test scrapper utilities.
+Test forex parser.
 
 Created on 2017-03-12 11:28
 
@@ -22,7 +22,7 @@ sys.path.append(dirname(dirname(__file__)))
 import nose
 from nose.tools import ok_
 
-from goldminer import scrapper
+from goldminer import forex
 
 # import application packages
 
@@ -33,13 +33,25 @@ __version__ = "1.0.0"
 __email__ = "krushinsky@gmail.com"
 
 
-class TestDefaultSession():
+
+class TestForexSession():
     def __init__(self):
-        self.session = scrapper.create_session()
+        self.forex = forex.ForexSession()
+        self.forex()
+    
+    def test_usd(self):
+        ok_(isinstance(self.forex.usd, float))
+    
+    def test_eur(self):
+        ok_(isinstance(self.forex.eur, float))
         
-    def test_user_agent(self):
-        ua = self.session.headers.get('user-agent')
-        ok_(ua in scrapper.ALT_USER_AGENTS)
+        
+    def test_xau(self):
+        ok_(isinstance(self.forex.xau, float))
+
+    def test_xag(self):
+        ok_(isinstance(self.forex.xag, float))    
+    
 
 
 

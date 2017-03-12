@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-Crawler specific errors
+Crawler specific errors.
 
 Created on 2014-07-10 16:06
 

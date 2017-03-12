@@ -39,6 +39,8 @@ python setup.py install develop
 * [Beautiful Soup](http://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 * [lxml](http://lxml.de)
 
+Скопируйте файл `conf/default.conf` в `conf/local.conf`. Если нужно: внесите в local.conf изменения.
+
 
 ### Конфигурация
 
@@ -56,7 +58,7 @@ python setup.py install develop
 $ python tests/scrapper_test.py
 ```
 
-### Примеры запуска
+#### Примеры запуска
 
 ```
 $ python scripts/main.py 

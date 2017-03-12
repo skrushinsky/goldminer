@@ -28,7 +28,7 @@ sys.path.append(ROOTDIR)
 DEFAULT_CONF = os.path.join(ROOTDIR, 'conf', 'local.conf')
 
 
-from goldminer.scrapper import ForexSession
+from goldminer.forex import ForexSession
 from goldminer.utils import str_to_floats, random_seconds
 from goldminer.formatters import create_formatter
 

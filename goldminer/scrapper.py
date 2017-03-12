@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 '''
-The crawler
+Common crawler functions.
 
 Created on 2016-02-03 11:39
 
@@ -12,14 +12,10 @@ Created on 2016-02-03 11:39
 import logging
 import random
 import time
-import re
 
-from bs4 import BeautifulSoup as Soup
 import requests
 from requests.exceptions import RequestException
-
 from goldminer.errors import BotDetectedError, EmptyContentError, BadStatusError
-from goldminer.utils import random_seconds
 
 __author__ = 'Sergey Krushinsky'
 __copyright__ = "Copyright 2017"
@@ -55,20 +51,32 @@ DEFAULT_REQUEST_ARGS = {
 SITE_ROOT = 'http://www.forexpf.ru'
 
 def pick_user_agent():
+    '''Randomly pick User-Agernt string
+    '''
     return random.choice(ALT_USER_AGENTS)
 
 def create_session(**kwargs):
+    '''Create requests session.
+    
+    Optional named arguments:
+    
+    headers : dictionary of HTTP headers. If 'user-agent' header is not provided
+              by the caller, it is randomly picked (see pick_user_agent() function).
+    
+    proxies : The value must be either None (no proxies), or dictionary:
+              {'http': address, ...}, exactly as required by requests.Session
+              (see Requests docs).
+    '''
     # initialize arguments for requests library
-    args = dict(DEFAULT_REQUEST_ARGS)
+    args = dict()
     args.update(kwargs)
     s = requests.Session()
     headers = args.get('headers', {})
-    headers['User-Agent'] = random.choice(ALT_USER_AGENTS)
+    # If 'user-agent' header is not provided, pick a random name
+    if not 'user-agent' in [ k.lower() for k in headers.keys() ]:
+        headers['User-Agent'] = random.choice(ALT_USER_AGENTS)
     s.headers.update(headers)
-    
-    proxies = kwargs.get('proxies')
-    if proxies:
-        s.proxies = proxies 
+    s.proxies =  kwargs.get('proxies')
     
     return s
 
@@ -129,7 +137,7 @@ def get_once_request(url, session, params=None):
     Specialized get request
     '''
     # initialize arguments for requests library
-    args = dict()
+    args = dict(DEFAULT_REQUEST_ARGS)
     if params:
         args['params'] = params
     r = session.get(url, **args)
@@ -149,145 +157,3 @@ def get_request(url, session, params=None):
     Specialized get request with 7 retries
     '''
     return get_once_request(url, session, params=params)
-
-
-def _get_bid(table=None, row_offset=1, col_offset=0):
-    for i, tr in enumerate(table.find_all('tr')):
-        if i == row_offset:
-            for j, td in enumerate(tr.find_all('td')):
-                if j == col_offset:
-                    m = re.match(r'\d+\.\d+', td.text)
-                    logging.debug(td.text)
-                    if m:
-                        return float(td.text)
-                    else:
-                        logging.error('Expected decimal, found: <%s>', td.text)
-
-
-def _get_metal_bid(session, rel_url):
-    r = get_request('%s%s' % (SITE_ROOT, rel_url), session)
-    soup = Soup(r.text, 'lxml')
-    table = soup.find('table', class_='stat')
-    if table:
-        return _get_bid(table, 1, 0)
-
-def get_gold_bid(session=None, on_success=None, on_failure=None):
-    try:
-        res = _get_metal_bid(session, '/chart/gold/')
-    except Exception as ex:
-        on_failure(str(ex))
-    else:
-        on_success(res)
-    
-
-def get_silver_bid(session=None, on_success=None, on_failure=None):
-    try:
-        res = _get_metal_bid(session, '/chart/silver/')
-    except Exception as ex:
-        on_failure(str(ex))
-    else:
-        on_success(res)    
-
-
-def get_dollar_bid(table=None, on_success=None, on_failure=None):
-    try:
-        res = _get_bid(table, 1, 1)
-    except Exception as ex:
-        on_failure(str(ex))
-    else:
-        on_success(res) 
-
-def get_euro_bid(table=None, on_success=None, on_failure=None):
-    try:
-        res = _get_bid(table, 2, 2)
-    except Exception as ex:
-        on_failure(str(ex))
-    else:
-        on_success(res) 
-
-
-def get_money_bids_table(session=None, on_success=None, on_failure=None):
-    try:
-        r = get_request('%s%s' % (SITE_ROOT, '/chart/usdrub/'), session)
-        soup = Soup(r.text, 'lxml')
-        table = soup.find('table', class_='stat')
-    except Exception as ex:
-        on_failure(str(ex))
-    else:
-        if table is None:
-            on_failure('USD/EUR table not found')
-        else:
-            on_success(table) 
-
-
-            
-    
-class ForexSession(object):
-    def __init__(self, proxies=None, delay=DEFAULT_DELAY):
-        self._proxies = proxies
-        self._delay = delay
-        self._session = None
-        self._usd = None
-        self._eur = None
-        self._xau = None # gold
-        self._xag = None # silver
-        
-
-    def _on_failure(self, reason):
-        logging.error(reason)
-    
-    def _on_usd(self, val):
-        self._usd = val
-
-    def _on_eur(self, val):
-        self._eur = val
-        
-    def _on_usdeur_table(self, table):
-        get_dollar_bid(table, self._on_usd, self._on_failure)
-        get_euro_bid(table, self._on_eur, self._on_failure)
-      
-    def _on_xau(self, val):
-        self._xau = val        
-
-    def _on_xag(self, val):
-        self._xag = val
-     
-    @property
-    def session(self):
-        if self._session is None:
-            self._session = create_session(proxies=self._proxies)
-        return self._session
-    
-     
-    @property   
-    def usd(self):
-        return self._usd
-
-    @property   
-    def eur(self):
-        return self._eur        
-        
-    @property   
-    def xau(self):
-        return self._xau        
-
-    @property   
-    def xag(self):
-        return self._xag
-    
-    def _sleep(self):
-        d = self._delay
-        s = random_seconds(*d)
-        time.sleep(s)
-    
-        
-    def __call__(self, callback=None):
-        logging.debug('Starting %s session...', SITE_ROOT)
-        get_money_bids_table(self.session, self._on_usdeur_table, self._on_failure)
-        #self._sleep()
-        get_gold_bid(self.session, self._on_xau, self._on_failure)
-        #self._sleep()
-        get_silver_bid(self.session, self._on_xag, self._on_failure)
-
-
-
