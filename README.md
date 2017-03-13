@@ -61,4 +61,4 @@ $ python scripts/main.py
 
 - - -
 
-подробнее о программировании краулеров (ботов, скраперов, веб-роботов) на сайте [www.crawlers.info](http://www.crawlers.info).
+Подробнее о программировании краулеров (ботов, скраперов, веб-роботов, парсеров) на сайте [www.crawlers.info](http://www.crawlers.info).
