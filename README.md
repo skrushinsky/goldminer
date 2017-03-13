@@ -60,3 +60,5 @@ $ python scripts/main.py
 Подробнее в разделе [Примеры запуска](http://github.com/skrushinsky/goldminer/wiki/GoldMinerUsage).
 
 - - -
+
+подробнее о программировании краулеров (ботов, скраперов, веб-роботов) на сайте [www.crawlers.info](http://www.crawlers.info).
