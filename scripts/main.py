@@ -102,9 +102,10 @@ if __name__ == '__main__':
         proxy_addr = config.get('http', 'proxy')
         
         sct = 'format-%s' % args.format
-        fmt_args = { k: config.get(sct, k) for k in config.options(sct) } \
+        fmt_args = { k: config.get(sct, k).decode('string_escape') for k in config.options(sct) } \
                    if config.has_section(sct) \
                    else {}
+        logging.debug(fmt_args)
         consumer = ConsoleWriter(create_formatter(args.format, fmt_args))
         worker = Worker(
             once=args.once,
